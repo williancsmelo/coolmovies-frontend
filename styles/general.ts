@@ -7,5 +7,9 @@ export default {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
+  }),
+  pageContainer: css({
+    paddingInline: '30px',
+    paddingTop: '30px'
   })
 }
