@@ -1,23 +1,29 @@
-import { css } from '@emotion/react';
+import { css } from '@emotion/react'
 import {
   Button,
   Paper,
   TextField,
   Tooltip,
   Typography,
-  Zoom,
-} from '@mui/material';
-import type { NextPage } from 'next';
-import { exampleActions, useAppDispatch, useAppSelector } from '../redux';
-
-const primary = '#1976d2';
+  Zoom
+} from '@mui/material'
+import type { NextPage } from 'next'
+import { exampleActions, useAppDispatch, useAppSelector } from '../redux'
+import { useRouter } from 'next/router'
+import general from '../styles/general'
+import { useTheme } from '@mui/material'
 
 const Home: NextPage = () => {
-  const dispatch = useAppDispatch();
-  const exampleState = useAppSelector((state) => state.example);
+  const { palette } = useTheme()
+  const router = useRouter()
+  const dispatch = useAppDispatch()
+  const exampleState = useAppSelector(state => state.example)
   return (
-    <div css={styles.root}>
-      <Paper elevation={3} css={styles.navBar}>
+    <div css={general.root}>
+      <Paper
+        elevation={3}
+        css={[styles.navBar, { background: palette.primary.dark }]}
+      >
         <Typography>{'EcoPortal'}</Typography>
       </Paper>
 
@@ -31,7 +37,6 @@ const Home: NextPage = () => {
         Please dont spend ages on this and just get through as much of it as you can. 
         Good luck! :) `}
         </Typography>
-
         <div css={styles.mainControls}>
           <Tooltip
             title={`Side Effect Count from Epic (Gets run on odd values): ${exampleState.sideEffectCount}`}
@@ -57,7 +62,6 @@ const Home: NextPage = () => {
             {exampleState.fetchData ? 'Hide some data' : 'Fetch some data'}
           </Button>
         </div>
-
         <Zoom in={Boolean(exampleState.fetchData)} unmountOnExit mountOnEnter>
           <TextField
             css={styles.dataInput}
@@ -66,21 +70,16 @@ const Home: NextPage = () => {
             defaultValue={JSON.stringify(exampleState.fetchData)}
           />
         </Zoom>
+        <Button onClick={() => router.push('/reviews/listing')}>
+          GO TO REVIEW LISTING
+        </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const styles = {
-  root: css({
-    height: '100vh',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  }),
   navBar: css({
-    background: primary,
     height: 50,
     alignSelf: 'stretch',
     display: 'flex',
@@ -88,15 +87,15 @@ const styles = {
     padding: 16,
     borderRadius: 0,
     p: {
-      color: 'white',
-    },
+      color: 'white'
+    }
   }),
   body: css({
     alignSelf: 'stretch',
     padding: 32,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   }),
   heading: css({ marginTop: 16, fontSize: '2.75rem', textAlign: 'center' }),
   subtitle: css({
@@ -104,17 +103,17 @@ const styles = {
     textAlign: 'center',
     maxWidth: 600,
     margin: '24px 0',
-    color: 'rgba(0, 0, 0, 0.6)',
+    color: 'rgba(0, 0, 0, 0.6)'
   }),
   mainControls: css({
     display: 'flex',
     alignItems: 'center',
-    button: { marginRight: 16 },
+    button: { marginRight: 16 }
   }),
   dataInput: css({
     alignSelf: 'stretch',
-    margin: '32px 0',
-  }),
-};
+    margin: '32px 0'
+  })
+}
 
-export default Home;
+export default Home
