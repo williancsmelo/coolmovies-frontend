@@ -13,11 +13,6 @@ const theme = createTheme({
     background: {
       default: '#F7E8FD'
     }
-  },
-  transitions: {
-    duration: {
-      shortest: 0.1
-    }
   }
 })
 

@@ -4,43 +4,71 @@ import {
   CardHeader,
   CardMedia,
   CardContent,
-  Typography
+  Typography,
+  Grid
 } from '@mui/material'
 import review from '../../staticData'
 import getRating from '../elements-render/Rating'
-import { useTheme } from '@mui/material'
+import { css } from '@emotion/react'
 
 type ReviewCardProps = {
   review: MovieReview
 }
 
+const imageSize = 30
+const cardSize = 1024
+
 const ReviewCard = (/*{ review }: ReviewCardProps*/): JSX.Element => (
-  <Card sx={{ maxWidth: 900 }}>
-    <CardHeader
-      title={review.title}
-      subheader={
-        <div css={{ flexDirection: 'column', display: 'flex' }}>
-          {getRating(review.rating)}
-          {review.user.name}
-        </div>
-      }
-    />
-    <CardMedia
-      component="img"
-      height="505"
-      image={review.movie.imgUrl}
-      alt={review.movie.title}
-    />
-    <CardContent>
-      <Typography variant="subtitle1">{review.movie.title}</Typography>
-      <Typography variant="subtitle2">
-        Director: {review.movie.director.name}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {review.body}
-      </Typography>
-    </CardContent>
+  <Card sx={{ maxWidth: cardSize }} css={styles.card}>
+    <Grid container>
+      <Grid item xs={12} sm={4} md={3} lg={3} css={styles.imageContainer}>
+        <CardMedia
+          component="img"
+          css={styles.image}
+          image={review.movie.imgUrl}
+          alt={review.movie.title}
+        />
+      </Grid>
+      <Grid item xs={12} sm={8} md={9} lg={9}>
+        <CardHeader
+          title={review.title}
+          subheader={
+            <div css={{ flexDirection: 'column', display: 'flex' }}>
+              {getRating(review.rating)}
+              {review.user.name}
+            </div>
+          }
+        />
+        <CardContent>
+          <Typography variant="subtitle1">{review.movie.title}</Typography>
+          <Typography variant="subtitle2">
+            Director: {review.movie.director.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {review.body}
+          </Typography>
+        </CardContent>
+      </Grid>
+    </Grid>
   </Card>
 )
+
+const styles = {
+  image: css({
+    maxWidth: `${imageSize * 9}px`,
+    maxHeight: `${imageSize * 16}px`,
+    alignSelf: 'center'
+  }),
+  card: css({
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: '20px'
+  }),
+  imageContainer: css({
+    display: 'flex',
+    justifyContent: 'center'
+  })
+}
 
 export default ReviewCard
