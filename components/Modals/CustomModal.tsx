@@ -35,7 +35,13 @@ const CustomModal = ({
           ]}
         >
           <div css={styles.header}>
-            <Typography variant="h5" id="modal-title">
+            <Typography
+              variant="h5"
+              id="modal-title"
+              css={css`
+                text-transform: capitalize;
+              `}
+            >
               {title}
             </Typography>
             <IconButton onClick={closeModal}>

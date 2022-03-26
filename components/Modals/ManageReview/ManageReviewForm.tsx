@@ -1,38 +1,63 @@
-import React from 'react'
+import React, { SyntheticEvent, useState } from 'react'
 import { css } from '@emotion/react'
 import { TextField, Grid, Rating, useTheme, Button } from '@mui/material'
 
-type ManageReviewFormProps = {}
+type ManageReviewFormProps = {
+  action: 'edit' | 'create'
+  initialValues?: Partial<MovieReview>
+}
 
-const ManageReviewForm = ({}: ManageReviewFormProps): JSX.Element => {
+const ManageReviewForm = ({
+  action,
+  initialValues = {}
+}: ManageReviewFormProps): JSX.Element => {
+  const defaultValues = { title: '', rating: 3, body: '' }
+  const [formValues, setFormValues] = useState(
+    action === 'edit' ? initialValues : defaultValues
+  )
   const { palette } = useTheme()
+  const onSubmit = (params: any) => {
+    console.log(params)
+  }
+  const setFieldValue = (value: string | number, field: string) => {
+    setFormValues({
+      ...formValues,
+      [field]: value
+    })
+  }
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <div css={styles.formContainer}>
         <Grid container columnSpacing={2}>
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextField
-              label="Title"
-              name="title"
-              variant="outlined"
+              onChange={({ target: { value } }) =>
+                setFieldValue(value, 'title')
+              }
+              value={formValues.title}
               required
+              label="Title"
+              variant="outlined"
               css={styles.textField}
               color="secondary"
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} css={styles.ratingContainer}>
             <Rating
-              name="rating"
+              onChange={(_, value: number | null) => {
+                setFieldValue(value as number, 'rating')
+              }}
+              value={formValues.rating}
               css={{ color: palette.primary.main }}
               size="large"
             />
           </Grid>
         </Grid>
         <TextField
-          name="body"
+          onChange={({ target: { value } }) => setFieldValue(value, 'body')}
+          value={formValues.body}
           label="Description"
           multiline
-          maxRows={5}
           rows={5}
           color="secondary"
         />
@@ -48,6 +73,7 @@ const ManageReviewForm = ({}: ManageReviewFormProps): JSX.Element => {
                 background: ${palette.primary.dark};
               }
             `}
+            type="submit"
           >
             Submit
           </Button>

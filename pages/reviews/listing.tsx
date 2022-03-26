@@ -17,7 +17,9 @@ const Listing: NextPage = () => {
     state => state.listing
   )
   const [currentPage, setCurrentPage] = useState(1)
+  const [actionModal, setActionModal] = useState<'edit' | 'create'>('create')
   const [showModal, setShowModal] = useState(false)
+  const [reviewToEdit, setReviewToEdit] = useState<MovieReview>()
   const changePage = (event: ChangeEvent<unknown>, newPage: number) => {
     setCurrentPage(newPage)
     const requestConfig = {
@@ -25,6 +27,11 @@ const Listing: NextPage = () => {
       limit: PAGE_SIZE
     }
     dispatch(listingActions.fetch(requestConfig))
+  }
+  const openModal = (action: 'edit' | 'create', review?: MovieReview) => {
+    setActionModal(action)
+    setReviewToEdit(review)
+    setShowModal(true)
   }
   useEffect(() => {
     dispatch(listingActions.fetch({ limit: PAGE_SIZE }))
@@ -47,7 +54,11 @@ const Listing: NextPage = () => {
         </Backdrop>
         <div css={styles.header}>
           {pagination}
-          <Button variant="contained" color="secondary">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => openModal('create')}
+          >
             <AddIcon />
             Add Review
           </Button>
@@ -56,10 +67,7 @@ const Listing: NextPage = () => {
           <ReviewCard
             review={review}
             key={review.id}
-            onEdit={item => {
-              console.log(item)
-              setShowModal(true)
-            }}
+            onEdit={item => openModal('edit', item)}
           />
         ))}
         {pagination}
@@ -67,6 +75,8 @@ const Listing: NextPage = () => {
       <ManageReviewModal
         visible={showModal}
         closeModal={() => setShowModal(false)}
+        action={actionModal}
+        review={reviewToEdit}
       />
     </div>
   )
