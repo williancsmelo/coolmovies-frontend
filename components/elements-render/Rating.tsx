@@ -14,6 +14,7 @@ const RenderRating = (rating: number, maxRating = 5): JSX.Element => {
     const active = i + 1 <= rating
     toRender.push(
       <StarIcon
+        key={`${i}`}
         sx={{ color: active ? palette.primary.main : '' }}
         color={!active ? 'disabled' : 'inherit'}
       />

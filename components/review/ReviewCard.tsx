@@ -7,7 +7,6 @@ import {
   Typography,
   Grid
 } from '@mui/material'
-import review from '../../staticData'
 import getRating from '../elements-render/Rating'
 import { css } from '@emotion/react'
 
@@ -18,7 +17,7 @@ type ReviewCardProps = {
 const imageSize = 30
 const cardSize = 1024
 
-const ReviewCard = (/*{ review }: ReviewCardProps*/): JSX.Element => (
+const ReviewCard = ({ review }: ReviewCardProps): JSX.Element => (
   <Card sx={{ maxWidth: cardSize }} css={styles.card}>
     <Grid container>
       <Grid item xs={12} sm={4} md={3} lg={3} css={styles.imageContainer}>
