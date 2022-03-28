@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface ListingState {
+interface ReviewsState {
   listReviews: MovieReview[]
   loading: boolean
   totalReviews: number
+  currentPage: number
 }
 
-const initialState: ListingState = {
+const initialState: ReviewsState = {
   listReviews: [],
   loading: false,
-  totalReviews: 1
+  totalReviews: 1,
+  currentPage: 1
 }
 
 export const slice = createSlice({
@@ -18,7 +20,7 @@ export const slice = createSlice({
   reducers: {
     fetch: (
       state,
-      action: PayloadAction<{ limit: number; offset?: number }>
+      action: PayloadAction<{ limit: number; offset: number } | undefined>
     ) => {
       state.loading = true
     },
@@ -35,6 +37,9 @@ export const slice = createSlice({
     },
     toggleLoading: state => {
       state.loading = !state.loading
+    },
+    changeListingPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload
     },
     update: (state, action: PayloadAction<Partial<MovieReview>>) => {},
     successfulUpdate: (state, action: PayloadAction<string>) => {},

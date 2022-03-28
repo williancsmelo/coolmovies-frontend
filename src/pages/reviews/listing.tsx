@@ -8,20 +8,22 @@ import ReviewCard from '../../components/review/ReviewCard'
 import { useAppDispatch, useAppSelector, reviewsActions } from '../../redux'
 import ManageReviewModal from '../../components/Modals/ManageReview/Modal'
 import AddIcon from '@mui/icons-material/Add'
+import config from '../../config/listing-page'
+import { notificationActions } from '../../redux'
+import Notification from '../../components/elements-renderer/Notification'
 
-const PAGE_SIZE = 5
+const { PAGE_SIZE } = config
 
 const Listing: NextPage = () => {
   const dispatch = useAppDispatch()
-  const { totalReviews, loading, listReviews } = useAppSelector(
-    state => state.listing
+  const { totalReviews, loading, listReviews, currentPage } = useAppSelector(
+    state => state.reviews
   )
-  const [currentPage, setCurrentPage] = useState(1)
   const [actionModal, setActionModal] = useState<'edit' | 'create'>('create')
   const [showModal, setShowModal] = useState(false)
   const [reviewToEdit, setReviewToEdit] = useState<MovieReview>()
   const changePage = (event: ChangeEvent<unknown>, newPage: number) => {
-    setCurrentPage(newPage)
+    reviewsActions.changeListingPage(newPage)
     const requestConfig = {
       offset: (newPage - 1) * PAGE_SIZE,
       limit: PAGE_SIZE
@@ -34,8 +36,11 @@ const Listing: NextPage = () => {
     setShowModal(true)
   }
   useEffect(() => {
-    dispatch(reviewsActions.fetch({ limit: PAGE_SIZE }))
+    dispatch(reviewsActions.fetch())
     dispatch(reviewsActions.fetchTotalCount())
+    dispatch(
+      notificationActions.showNotification({ message: 'error', type: 'error' })
+    )
   }, [])
   const numberOfPages = Math.ceil(totalReviews / PAGE_SIZE)
   const pagination = (
@@ -76,6 +81,7 @@ const Listing: NextPage = () => {
         ))}
         {pagination}
       </div>
+      <Notification />
       <ManageReviewModal
         visible={showModal}
         closeModal={() => setShowModal(false)}

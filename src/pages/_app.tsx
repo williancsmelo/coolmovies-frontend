@@ -16,7 +16,6 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
       cache: new InMemoryCache(),
       uri: '/graphql'
     })
-
     const store = createStore({ epicDependencies: { client } })
     setStore(store)
   }, [])

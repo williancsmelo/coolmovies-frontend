@@ -8,7 +8,8 @@ import {
   moviesEpics,
   moviesReducer,
   usersEpics,
-  usersReducer
+  usersReducer,
+  notificationReducer
 } from './slices'
 import { combineEpics, createEpicMiddleware } from 'redux-observable'
 import { CreateStoreOptions } from './types'
@@ -30,9 +31,10 @@ export const createStore = ({ epicDependencies }: CreateStoreOptions) => {
       getDefaultMiddleware().concat(epicMiddleware),
     reducer: {
       example: exampleReducer,
-      listing: reviewsReducer,
+      reviews: reviewsReducer,
       movies: moviesReducer,
-      users: usersReducer
+      users: usersReducer,
+      notification: notificationReducer
     }
   })
 

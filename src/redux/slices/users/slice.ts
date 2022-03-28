@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface MoviesState {
+interface UsersState {
   listUsers: User[]
 }
 
-const initialState: MoviesState = {
+const initialState: UsersState = {
   listUsers: []
 }
 

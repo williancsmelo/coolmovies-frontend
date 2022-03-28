@@ -10,11 +10,17 @@ import {
   updateReview,
   createReview
 } from '../../../graphql/reviews'
+import config from '../../../config/listing-page'
+import { reviewsActions } from '.'
 
-type FetchReviewsConfig = {
-  limit: number
-  offset?: number
-}
+const { PAGE_SIZE } = config
+
+type FetchReviewsConfig =
+  | {
+      limit?: number
+      offset: number
+    }
+  | undefined
 
 export const listing: Epic = (
   action$: Observable<SliceAction['fetch']>,
@@ -24,11 +30,18 @@ export const listing: Epic = (
   action$.pipe(
     filter(actions.fetch.match),
     switchMap(async params => {
-      const { payload } = params as unknown as { payload: FetchReviewsConfig }
-      const queryConfig = {
-        limit: payload.limit,
-        offset: payload?.offset || 0
+      const { payload } = params as { payload?: FetchReviewsConfig }
+      let queryConfig = {
+        limit: PAGE_SIZE,
+        offset: (state$.value.reviews.currentPage - 1) * PAGE_SIZE
       }
+      if (payload) {
+        queryConfig = {
+          limit: payload?.limit || PAGE_SIZE,
+          offset: payload.offset
+        }
+      }
+      console.log('fetching reviews', queryConfig)
       try {
         const result = await client.query({
           query: loadReviewsQuery(queryConfig)
@@ -80,6 +93,7 @@ export const update: Epic = (
             ...payload
           }
         })
+        reviewsActions.fetch()
         return actions.successfulUpdate(`Review ${payload.title} updated`)
       } catch (err) {
         console.error(err)
@@ -105,6 +119,7 @@ export const create: Epic = (
             ...payload
           }
         })
+        reviewsActions.fetch()
         return actions.successfulCreate(`Review ${payload.title} created`)
       } catch (err) {
         console.error(err)
