@@ -4,9 +4,9 @@ module.exports = {
     return [
       {
         source: '/graphql',
-        destination: 'http://localhost:5001/graphql',
-      },
-    ];
+        destination: `${process.env.REACT_APP_API_URL}/graphql`
+      }
+    ]
   },
-  reactStrictMode: true,
-};
+  reactStrictMode: true
+}
