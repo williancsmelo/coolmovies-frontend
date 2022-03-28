@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 import { Epic, StateObservable } from 'redux-observable'
-import { Observable } from 'rxjs'
-import { filter, map, switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { filter, switchMap } from 'rxjs/operators'
 import { RootState } from '../../store'
 import { EpicDependencies } from '../../types'
 import { actions, SliceAction } from './slice'
@@ -30,7 +30,7 @@ export const listingEpic: Epic = (
         })
         return actions.loadedReviews(result.data.allMovieReviews.nodes)
       } catch (err) {
-        console.log(err)
+        actions.loadError('Error listing reviews')
         return actions.toggleLoading()
       }
     })
@@ -51,6 +51,7 @@ export const getTotalCount: Epic = (
         return actions.loadedTotal(result.data?.allMovieReviews.totalCount)
       } catch (err) {
         console.log(err)
+        return actions.loadError('Error getting total reviews')
       }
     })
   )

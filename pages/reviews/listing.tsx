@@ -37,18 +37,22 @@ const Listing: NextPage = () => {
     dispatch(listingActions.fetch({ limit: PAGE_SIZE }))
     dispatch(listingActions.fetchTotalCount())
   }, [])
+  const numberOfPages = Math.ceil(totalReviews / PAGE_SIZE)
   const pagination = (
     <Pagination
-      count={Math.ceil(totalReviews / PAGE_SIZE)}
+      count={numberOfPages}
       page={currentPage}
       onChange={changePage}
       color="secondary"
-      css={listingStyles.pagination}
+      css={[
+        listingStyles.pagination,
+        { visibility: numberOfPages === 1 ? 'hidden' : 'visible' }
+      ]}
     />
   )
   return (
     <div css={general.root}>
-      <div css={general.pageContainer}>
+      <div css={[general.pageContainer, { maxWidth: '1024px' }]}>
         <Backdrop open={loading}>
           <CircularProgress hidden={!loading} color="secondary" />
         </Backdrop>

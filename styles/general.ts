@@ -10,6 +10,7 @@ export default {
   }),
   pageContainer: css({
     paddingInline: '30px',
-    paddingTop: '30px'
+    paddingTop: '30px',
+    width: '100%'
   })
 }

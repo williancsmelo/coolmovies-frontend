@@ -9,7 +9,7 @@ import {
   IconButton
 } from '@mui/material'
 import { Edit as EditIcon } from '@mui/icons-material'
-import getRating from '../elements-render/Rating'
+import getRating from '../elements-renderer/Rating'
 import { css } from '@emotion/react'
 
 type ReviewCardProps = {

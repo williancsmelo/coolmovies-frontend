@@ -1,6 +1,8 @@
-import React, { SyntheticEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { css } from '@emotion/react'
 import { TextField, Grid, Rating, useTheme, Button } from '@mui/material'
+import { formStyles } from '../../../styles'
+import MovieSelector from '../../form-fields/MovieSelector'
 
 type ManageReviewFormProps = {
   action: 'edit' | 'create'
@@ -19,7 +21,7 @@ const ManageReviewForm = ({
   const onSubmit = (params: any) => {
     console.log(params)
   }
-  const setFieldValue = (value: string | number, field: string) => {
+  const setFieldValue = (value: string | number | null, field: string) => {
     setFormValues({
       ...formValues,
       [field]: value
@@ -28,6 +30,15 @@ const ManageReviewForm = ({
   return (
     <form onSubmit={onSubmit}>
       <div css={styles.formContainer}>
+        <MovieSelector
+          onChange={value =>
+            setFieldValue(value?.id ? value.id : null, 'movie')
+          }
+          styles={css`
+            width: 100%;
+            max-width: 412px;
+          `}
+        />
         <Grid container columnSpacing={2}>
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <TextField
@@ -38,7 +49,7 @@ const ManageReviewForm = ({
               required
               label="Title"
               variant="outlined"
-              css={styles.textField}
+              css={formStyles.textField}
               color="secondary"
             />
           </Grid>
@@ -87,10 +98,6 @@ const styles = {
   formContainer: css({
     display: 'flex',
     flexDirection: 'column'
-  }),
-  textField: css({
-    marginBottom: '10px',
-    width: '100%'
   }),
   ratingContainer: css({
     display: 'flex',

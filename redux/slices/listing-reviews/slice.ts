@@ -27,6 +27,9 @@ export const slice = createSlice({
     loadedTotal: (state, action: PayloadAction<number>) => {
       state.totalReviews = action.payload
     },
+    loadError: (state, action: PayloadAction<string>) => {
+      state.listReviews = []
+    },
     toggleLoading: state => {
       state.loading = !state.loading
     }
