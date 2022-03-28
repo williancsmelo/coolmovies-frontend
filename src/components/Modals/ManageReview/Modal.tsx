@@ -19,9 +19,12 @@ const ManageReviewModal = ({
   onUpdate
 }: ManageReviewModalProps) => {
   const dispatch = useAppDispatch()
-  const onSubmit = (values: Partial<MovieReview>) => {
-    console.log(values)
-    dispatch(reviewsActions.update(values))
+  const onSubmit = async (values: Partial<MovieReview>) => {
+    if (action === 'edit') {
+      dispatch(reviewsActions.update(values))
+    } else {
+      dispatch(reviewsActions.create(values))
+    }
     closeModal()
     onUpdate()
   }

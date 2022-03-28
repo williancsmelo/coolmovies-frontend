@@ -67,3 +67,27 @@ export const updateReview = gql`
     }
   }
 `
+
+export const createReview = gql`
+  mutation createReview(
+    $body: String!
+    $movieId: UUID!
+    $rating: Int!
+    $title: String!
+    $userId: UUID!
+  ) {
+    createMovieReview(
+      input: {
+        movieReview: {
+          title: $title
+          movieId: $movieId
+          userReviewerId: $userId
+          body: $body
+          rating: $rating
+        }
+      }
+    ) {
+      clientMutationId
+    }
+  }
+`

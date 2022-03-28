@@ -3,6 +3,7 @@ import { css } from '@emotion/react'
 import { TextField, Grid, Rating, useTheme, Button } from '@mui/material'
 import { formStyles } from '../../../styles'
 import MovieSelector from '../../form-fields/MovieSelector'
+import UserSelector from '../../form-fields/UserSelector'
 
 type ManageReviewFormProps = {
   action: 'edit' | 'create'
@@ -15,7 +16,8 @@ type FormValues = Partial<{
   body: string
   title: string
   rating: number
-  movie: { id: string; title: string }
+  movie: { id: string; title: string } | null
+  user?: User | null
 }>
 
 const ManageReviewForm = ({
@@ -24,7 +26,13 @@ const ManageReviewForm = ({
   onSubmit
 }: ManageReviewFormProps): JSX.Element => {
   const { palette } = useTheme()
-  const defaultValues = { title: '', rating: 3, body: '' }
+  const defaultValues = {
+    title: '',
+    rating: 3,
+    body: '',
+    user: null,
+    movie: null
+  }
   const formatInitialValues = (values: typeof initialValues): FormValues => {
     const { movie } = values
     let newValues: FormValues = {
@@ -53,6 +61,18 @@ const ManageReviewForm = ({
   return (
     <form>
       <div css={styles.formContainer}>
+        {action === 'create' && (
+          <UserSelector
+            onChange={value => {
+              setFieldValue(value, 'user')
+            }}
+            styles={css`
+              width: 100%;
+              max-width: 412px;
+            `}
+            value={formValues.user}
+          />
+        )}
         <MovieSelector
           onChange={value => {
             setFieldValue(value, 'movie')

@@ -7,7 +7,8 @@ import { actions, SliceAction } from './slice'
 import {
   loadReviewsQuery,
   loadTotalCount,
-  updateReview
+  updateReview,
+  createReview
 } from '../../../graphql/reviews'
 
 type FetchReviewsConfig = {
@@ -32,7 +33,6 @@ export const listing: Epic = (
         const result = await client.query({
           query: loadReviewsQuery(queryConfig)
         })
-        console.log(result.data.allMovieReviews.nodes)
         return actions.loadedReviews(result.data.allMovieReviews.nodes)
       } catch (err) {
         actions.loadError('Error listing reviews')
@@ -55,7 +55,7 @@ export const getTotalCount: Epic = (
         })
         return actions.loadedTotal(result.data?.allMovieReviews.totalCount)
       } catch (err) {
-        console.log(err)
+        console.error(err)
         return actions.loadError('Error getting total reviews')
       }
     })
@@ -73,10 +73,6 @@ export const update: Epic = (
         return actions.loadError('Error updating review')
       }
       try {
-        console.log({
-          movieId: payload.movie?.id,
-          ...payload
-        })
         await client.mutate({
           mutation: updateReview,
           variables: {
@@ -86,8 +82,33 @@ export const update: Epic = (
         })
         return actions.successfulUpdate(`Review ${payload.title} updated`)
       } catch (err) {
-        console.log(err)
+        console.error(err)
         return actions.loadError('Error updating review')
+      }
+    })
+  )
+
+export const create: Epic = (
+  action$: Observable<SliceAction['create']>,
+  state$: StateObservable<RootState>,
+  { client }: EpicDependencies
+) =>
+  action$.pipe(
+    filter(actions.create.match),
+    switchMap(async ({ payload }: { payload: Partial<MovieReview> }) => {
+      try {
+        await client.mutate({
+          mutation: createReview,
+          variables: {
+            movieId: payload.movie?.id,
+            userId: payload.user?.id,
+            ...payload
+          }
+        })
+        return actions.successfulCreate(`Review ${payload.title} created`)
+      } catch (err) {
+        console.error(err)
+        return actions.loadError('Error creating review')
       }
     })
   )

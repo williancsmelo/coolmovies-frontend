@@ -37,7 +37,9 @@ export const slice = createSlice({
       state.loading = !state.loading
     },
     update: (state, action: PayloadAction<Partial<MovieReview>>) => {},
-    successfulUpdate: (state, action: PayloadAction<string>) => {}
+    successfulUpdate: (state, action: PayloadAction<string>) => {},
+    create: (state, action: PayloadAction<Partial<MovieReview>>) => {},
+    successfulCreate: (state, action: PayloadAction<string>) => {}
   }
 })
 
