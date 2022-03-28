@@ -7,37 +7,61 @@ import MovieSelector from '../../form-fields/MovieSelector'
 type ManageReviewFormProps = {
   action: 'edit' | 'create'
   initialValues?: Partial<MovieReview>
+  onSubmit: any
 }
+
+type FormValues = Partial<{
+  id: string
+  body: string
+  title: string
+  rating: number
+  movie: { id: string; title: string }
+}>
 
 const ManageReviewForm = ({
   action,
-  initialValues = {}
+  initialValues = {},
+  onSubmit
 }: ManageReviewFormProps): JSX.Element => {
-  const defaultValues = { title: '', rating: 3, body: '' }
-  const [formValues, setFormValues] = useState(
-    action === 'edit' ? initialValues : defaultValues
-  )
   const { palette } = useTheme()
-  const onSubmit = (params: any) => {
-    console.log(params)
+  const defaultValues = { title: '', rating: 3, body: '' }
+  const formatInitialValues = (values: typeof initialValues): FormValues => {
+    const { movie } = values
+    let newValues: FormValues = {
+      id: initialValues.id,
+      body: initialValues.body,
+      title: initialValues.title,
+      rating: initialValues.rating
+    }
+    if (movie) {
+      newValues.movie = {
+        id: movie.id,
+        title: movie.title
+      }
+    }
+    return newValues
   }
-  const setFieldValue = (value: string | number | null, field: string) => {
+  const [formValues, setFormValues] = useState<FormValues>(
+    action === 'edit' ? formatInitialValues(initialValues) : defaultValues
+  )
+  const setFieldValue = (value: any, field: string) => {
     setFormValues({
       ...formValues,
       [field]: value
     })
   }
   return (
-    <form onSubmit={onSubmit}>
+    <form>
       <div css={styles.formContainer}>
         <MovieSelector
-          onChange={value =>
-            setFieldValue(value?.id ? value.id : null, 'movie')
-          }
+          onChange={value => {
+            setFieldValue(value, 'movie')
+          }}
           styles={css`
             width: 100%;
             max-width: 412px;
           `}
+          value={formValues.movie}
         />
         <Grid container columnSpacing={2}>
           <Grid item xs={12} sm={6} md={6} lg={6}>
@@ -84,7 +108,7 @@ const ManageReviewForm = ({
                 background: ${palette.primary.dark};
               }
             `}
-            type="submit"
+            onClick={() => onSubmit(formValues)}
           >
             Submit
           </Button>

@@ -5,8 +5,8 @@ import { css } from '@emotion/react'
 import { Pagination, CircularProgress, Backdrop, Button } from '@mui/material'
 import listingStyles from '../../styles/listing'
 import ReviewCard from '../../components/review/ReviewCard'
-import { useAppDispatch, useAppSelector, listingActions } from '../../redux'
-import ManageReviewModal from '../../components/Modals/ManageReview/ManageReviewModal'
+import { useAppDispatch, useAppSelector, reviewsActions } from '../../redux'
+import ManageReviewModal from '../../components/Modals/ManageReview/Modal'
 import AddIcon from '@mui/icons-material/Add'
 
 const PAGE_SIZE = 5
@@ -26,7 +26,7 @@ const Listing: NextPage = () => {
       offset: (newPage - 1) * PAGE_SIZE,
       limit: PAGE_SIZE
     }
-    dispatch(listingActions.fetch(requestConfig))
+    dispatch(reviewsActions.fetch(requestConfig))
   }
   const openModal = (action: 'edit' | 'create', review?: MovieReview) => {
     setActionModal(action)
@@ -34,8 +34,8 @@ const Listing: NextPage = () => {
     setShowModal(true)
   }
   useEffect(() => {
-    dispatch(listingActions.fetch({ limit: PAGE_SIZE }))
-    dispatch(listingActions.fetchTotalCount())
+    dispatch(reviewsActions.fetch({ limit: PAGE_SIZE }))
+    dispatch(reviewsActions.fetchTotalCount())
   }, [])
   const numberOfPages = Math.ceil(totalReviews / PAGE_SIZE)
   const pagination = (
@@ -81,6 +81,7 @@ const Listing: NextPage = () => {
         closeModal={() => setShowModal(false)}
         action={actionModal}
         review={reviewToEdit}
+        onUpdate={() => changePage('simulateEvent' as any, currentPage)}
       />
     </div>
   )

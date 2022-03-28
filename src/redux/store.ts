@@ -3,15 +3,15 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import {
   exampleReducer,
   exampleEpics,
-  listingEpics,
-  listingReducer,
+  reviewsEpics,
+  reviewsReducer,
   moviesEpics,
   moviesReducer
 } from './slices'
 import { combineEpics, createEpicMiddleware } from 'redux-observable'
 import { CreateStoreOptions } from './types'
 
-const rootEpic = combineEpics(exampleEpics, listingEpics, moviesEpics)
+const rootEpic = combineEpics(exampleEpics, reviewsEpics, moviesEpics)
 
 export const createStore = ({ epicDependencies }: CreateStoreOptions) => {
   const epicMiddleware = createEpicMiddleware({
@@ -23,7 +23,7 @@ export const createStore = ({ epicDependencies }: CreateStoreOptions) => {
       getDefaultMiddleware().concat(epicMiddleware),
     reducer: {
       example: exampleReducer,
-      listing: listingReducer,
+      listing: reviewsReducer,
       movies: moviesReducer
     }
   })

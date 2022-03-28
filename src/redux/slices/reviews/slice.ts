@@ -14,12 +14,15 @@ const initialState: ListingState = {
 
 export const slice = createSlice({
   initialState,
-  name: 'listing-reviews',
+  name: 'reviews',
   reducers: {
-    fetch: state => {
+    fetch: (
+      state,
+      action: PayloadAction<{ limit: number; offset?: number }>
+    ) => {
       state.loading = true
     },
-    fetchTotalCount: () => {},
+    fetchTotalCount: (state, action: PayloadAction<void>) => {},
     loadedReviews: (state, action: PayloadAction<MovieReview[]>) => {
       state.loading = false
       state.listReviews = action.payload
@@ -32,7 +35,9 @@ export const slice = createSlice({
     },
     toggleLoading: state => {
       state.loading = !state.loading
-    }
+    },
+    update: (state, action: PayloadAction<Partial<MovieReview>>) => {},
+    successfulUpdate: (state, action: PayloadAction<string>) => {}
   }
 })
 

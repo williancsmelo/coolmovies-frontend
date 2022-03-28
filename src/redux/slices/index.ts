@@ -1,3 +1,3 @@
 export * from './example'
-export * from './listing-reviews'
+export * from './reviews'
 export * from './movies'

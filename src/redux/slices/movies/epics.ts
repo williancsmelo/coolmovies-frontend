@@ -1,10 +1,10 @@
-import { gql } from '@apollo/client'
 import { Epic, StateObservable } from 'redux-observable'
 import { Observable } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 import { RootState } from '../../store'
 import { EpicDependencies } from '../../types'
 import { actions, SliceAction } from './slice'
+import { loadMoviesQuery } from '../../../graphql/movies'
 
 export const listMoviesEpic: Epic = (
   action$: Observable<SliceAction['fetch']>,
@@ -24,14 +24,3 @@ export const listMoviesEpic: Epic = (
       }
     })
   )
-
-const loadMoviesQuery = gql`
-  query AllMovies {
-    allMovies {
-      nodes {
-        id
-        title
-      }
-    }
-  }
-`

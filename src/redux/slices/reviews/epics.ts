@@ -1,17 +1,21 @@
-import { gql } from '@apollo/client'
 import { Epic, StateObservable } from 'redux-observable'
 import { Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 import { RootState } from '../../store'
 import { EpicDependencies } from '../../types'
 import { actions, SliceAction } from './slice'
+import {
+  loadReviewsQuery,
+  loadTotalCount,
+  updateReview
+} from '../../../graphql/reviews'
 
 type FetchReviewsConfig = {
   limit: number
   offset?: number
 }
 
-export const listingEpic: Epic = (
+export const listing: Epic = (
   action$: Observable<SliceAction['fetch']>,
   state$: StateObservable<RootState>,
   { client }: EpicDependencies
@@ -28,6 +32,7 @@ export const listingEpic: Epic = (
         const result = await client.query({
           query: loadReviewsQuery(queryConfig)
         })
+        console.log(result.data.allMovieReviews.nodes)
         return actions.loadedReviews(result.data.allMovieReviews.nodes)
       } catch (err) {
         actions.loadError('Error listing reviews')
@@ -56,43 +61,33 @@ export const getTotalCount: Epic = (
     })
   )
 
-const loadReviewsQuery = ({
-  limit,
-  offset
-}: {
-  limit: number
-  offset: number
-}) => gql`
-  query AllMovieReviews {
-    allMovieReviews(offset: ${offset}, first: ${limit}) {
-      nodes {
-        id
-        body
-        title
-        rating
-        movie: movieByMovieId {
-          imgUrl
-          title
-          releaseDate
-          id
-          director: movieDirectorByMovieDirectorId {
-            name
-            id
-          }
-        }
-        user: userByUserReviewerId {
-          id
-          name
-        }
+export const update: Epic = (
+  action$: Observable<SliceAction['update']>,
+  state$: StateObservable<RootState>,
+  { client }: EpicDependencies
+) =>
+  action$.pipe(
+    filter(actions.update.match),
+    switchMap(async ({ payload }: { payload: Partial<MovieReview> }) => {
+      if (!payload?.id) {
+        return actions.loadError('Error updating review')
       }
-    }
-  }
-`
-
-const loadTotalCount = gql`
-  query countRegistry {
-    allMovieReviews {
-      totalCount
-    }
-  }
-`
+      try {
+        console.log({
+          movieId: payload.movie?.id,
+          ...payload
+        })
+        await client.mutate({
+          mutation: updateReview,
+          variables: {
+            movieId: payload.movie?.id,
+            ...payload
+          }
+        })
+        return actions.successfulUpdate(`Review ${payload.title} updated`)
+      } catch (err) {
+        console.log(err)
+        return actions.loadError('Error updating review')
+      }
+    })
+  )
