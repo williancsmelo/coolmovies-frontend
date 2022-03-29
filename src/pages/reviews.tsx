@@ -10,10 +10,11 @@ import ManageReviewModal from '../components/Modals/ManageReview/Modal'
 import AddIcon from '@mui/icons-material/Add'
 import config from '../config/listing-page'
 import Notification from '../components/elements-renderer/Notification'
+import { getOffset } from '../helpers/listing-reviews'
 
 const { PAGE_SIZE } = config
 
-const Listing: NextPage = () => {
+const Reviews: NextPage = () => {
   const dispatch = useAppDispatch()
   const { totalReviews, loading, listReviews, currentPage } = useAppSelector(
     state => state.reviews
@@ -24,7 +25,7 @@ const Listing: NextPage = () => {
   const changePage = (event: ChangeEvent<unknown>, newPage: number) => {
     dispatch(reviewsActions.changeListingPage(newPage))
     const requestConfig = {
-      offset: (newPage - 1) * PAGE_SIZE,
+      offset: getOffset(newPage),
       limit: PAGE_SIZE
     }
     dispatch(reviewsActions.fetch(requestConfig))
@@ -99,4 +100,4 @@ const styles = {
   `
 }
 
-export default Listing
+export default Reviews

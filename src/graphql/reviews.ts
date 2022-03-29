@@ -1,5 +1,4 @@
 import { gql } from '@apollo/client'
-import { graphql } from '@apollo/client/react/hoc'
 
 export const loadReviewsQuery = gql`
   query AllMovieReviews($offset: Int!, $limit: Int!) {

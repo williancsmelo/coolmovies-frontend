@@ -54,13 +54,11 @@ export const listingEpic: Epic = (
           offset: payload.offset
         }
       }
-      console.log('updating', queryConfig)
       try {
         const result = await client.query({
           query: loadReviewsQuery,
           variables: queryConfig
         })
-        console.log('query result', result)
         return actions.loadedReviews(result.data.allMovieReviews.nodes)
       } catch (err) {
         console.error(err)
@@ -101,19 +99,14 @@ export const updateEpic: Epic = (
         return actions.loadError('Error updating review')
       }
       try {
-        const response = await client.mutate({
+        await client.mutate({
           mutation: updateReview,
           variables: {
             movieId: payload.movie?.id,
             ...payload
           }
         })
-        console.log(response)
         return actions.fetch()
-        return notification.showNotification({
-          message: `Review ${payload.title} updated`,
-          type: 'success'
-        })
       } catch (err) {
         console.error(err)
         return actions.loadError('Error updating review')
@@ -138,10 +131,7 @@ export const createEpic: Epic = (
             ...payload
           }
         })
-        return notification.showNotification({
-          message: `Review ${payload.title} created`,
-          type: 'success'
-        })
+        return actions.fetch()
       } catch (err) {
         console.error(err)
         return actions.loadError('Error creating review')
@@ -164,10 +154,7 @@ export const deleteEpic: Epic = (
             reviewId: payload
           }
         })
-        return notification.showNotification({
-          message: `Review deleted`,
-          type: 'success'
-        })
+        return actions.fetch()
       } catch (err) {
         console.error(err)
         return actions.loadError('Error deleting review')
