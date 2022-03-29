@@ -1,6 +1,6 @@
 import { Epic, StateObservable } from 'redux-observable'
 import { Observable, of } from 'rxjs'
-import { filter, switchMap } from 'rxjs/operators'
+import { filter, switchMap, concatMap } from 'rxjs/operators'
 import { RootState } from '../../store'
 import { EpicDependencies } from '../../types'
 import { actions, SliceAction } from './slice'
@@ -11,7 +11,7 @@ import {
   createReview
 } from '../../../graphql/reviews'
 import config from '../../../config/listing-page'
-import { reviewsActions } from '.'
+import { notificationActions as notification } from '../notification'
 
 const { PAGE_SIZE } = config
 
@@ -22,7 +22,19 @@ type FetchReviewsConfig =
     }
   | undefined
 
-export const listing: Epic = (
+export const loadErrorEpic: Epic = (
+  action$: Observable<SliceAction['loadError']>,
+  state$: StateObservable<RootState>
+) =>
+  action$.pipe(
+    filter(actions.loadError.match),
+    switchMap(async params => {
+      const { payload } = params
+      return notification.showNotification({ message: payload, type: 'error' })
+    })
+  )
+
+export const listingEpic: Epic = (
   action$: Observable<SliceAction['fetch']>,
   state$: StateObservable<RootState>,
   { client }: EpicDependencies
@@ -41,20 +53,18 @@ export const listing: Epic = (
           offset: payload.offset
         }
       }
-      console.log('fetching reviews', queryConfig)
       try {
         const result = await client.query({
           query: loadReviewsQuery(queryConfig)
         })
         return actions.loadedReviews(result.data.allMovieReviews.nodes)
       } catch (err) {
-        actions.loadError('Error listing reviews')
-        return actions.toggleLoading()
+        return actions.loadError('Error listing reviews')
       }
     })
   )
 
-export const getTotalCount: Epic = (
+export const getTotalCountEpic: Epic = (
   action$: Observable<SliceAction['fetchTotalCount']>,
   state$: StateObservable<RootState>,
   { client }: EpicDependencies
@@ -69,12 +79,12 @@ export const getTotalCount: Epic = (
         return actions.loadedTotal(result.data?.allMovieReviews.totalCount)
       } catch (err) {
         console.error(err)
-        return actions.loadError('Error getting total reviews')
+        return actions.loadedTotal(0)
       }
     })
   )
 
-export const update: Epic = (
+export const updateEpic: Epic = (
   action$: Observable<SliceAction['update']>,
   state$: StateObservable<RootState>,
   { client }: EpicDependencies
@@ -93,8 +103,11 @@ export const update: Epic = (
             ...payload
           }
         })
-        reviewsActions.fetch()
-        return actions.successfulUpdate(`Review ${payload.title} updated`)
+        actions.fetch()
+        return notification.showNotification({
+          message: `Review ${payload.title} updated`,
+          type: 'success'
+        })
       } catch (err) {
         console.error(err)
         return actions.loadError('Error updating review')
@@ -102,7 +115,7 @@ export const update: Epic = (
     })
   )
 
-export const create: Epic = (
+export const createEpic: Epic = (
   action$: Observable<SliceAction['create']>,
   state$: StateObservable<RootState>,
   { client }: EpicDependencies
@@ -119,8 +132,11 @@ export const create: Epic = (
             ...payload
           }
         })
-        reviewsActions.fetch()
-        return actions.successfulCreate(`Review ${payload.title} created`)
+        actions.fetch()
+        return notification.showNotification({
+          message: `Review ${payload.title} created`,
+          type: 'success'
+        })
       } catch (err) {
         console.error(err)
         return actions.loadError('Error creating review')

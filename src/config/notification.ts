@@ -1,3 +1,3 @@
 export default {
-  DURATION_TIME: 6000
+  DURATION_TIME: 4000
 }

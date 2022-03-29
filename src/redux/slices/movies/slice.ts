@@ -18,9 +18,6 @@ export const slice = createSlice({
       action: PayloadAction<Pick<Movie, 'id' | 'title'>[]>
     ) => {
       state.listMovies = action.payload
-    },
-    loadError: (state, action: PayloadAction<string>) => {
-      state.listMovies = []
     }
   }
 })

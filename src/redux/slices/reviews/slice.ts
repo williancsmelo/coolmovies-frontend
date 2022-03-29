@@ -33,7 +33,7 @@ export const slice = createSlice({
       state.totalReviews = action.payload
     },
     loadError: (state, action: PayloadAction<string>) => {
-      state.listReviews = []
+      state.loading = false
     },
     toggleLoading: state => {
       state.loading = !state.loading

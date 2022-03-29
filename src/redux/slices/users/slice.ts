@@ -15,9 +15,6 @@ export const slice = createSlice({
     fetch: () => {},
     loadedUsers: (state, action: PayloadAction<User[]>) => {
       state.listUsers = action.payload
-    },
-    loadError: (state, action: PayloadAction<string>) => {
-      state.listUsers = []
     }
   }
 })

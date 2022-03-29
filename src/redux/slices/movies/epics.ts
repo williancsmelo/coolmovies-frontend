@@ -5,6 +5,7 @@ import { RootState } from '../../store'
 import { EpicDependencies } from '../../types'
 import { actions, SliceAction } from './slice'
 import { loadMoviesQuery } from '../../../graphql/movies'
+import { notificationActions as notify } from '../notification'
 
 export const listMoviesEpic: Epic = (
   action$: Observable<SliceAction['fetch']>,
@@ -20,7 +21,10 @@ export const listMoviesEpic: Epic = (
         })
         return actions.loadedMovies(result.data.allMovies.nodes)
       } catch (err) {
-        return actions.loadError('Error listing movies')
+        return notify.showNotification({
+          message: 'Error listing movies',
+          type: 'error'
+        })
       }
     })
   )

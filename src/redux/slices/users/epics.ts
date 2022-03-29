@@ -5,6 +5,7 @@ import { RootState } from '../../store'
 import { EpicDependencies } from '../../types'
 import { actions, SliceAction } from './slice'
 import { loadUsersQuery } from '../../../graphql/users'
+import { notificationActions as notify } from '../notification'
 
 export const listUsersEpic: Epic = (
   action$: Observable<SliceAction['fetch']>,
@@ -20,7 +21,10 @@ export const listUsersEpic: Epic = (
         })
         return actions.loadedUsers(result.data.allUsers.nodes)
       } catch (err) {
-        return actions.loadError('Error listing users')
+        return notify.showNotification({
+          message: 'Error listing users',
+          type: 'error'
+        })
       }
     })
   )

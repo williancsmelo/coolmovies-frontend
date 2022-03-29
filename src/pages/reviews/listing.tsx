@@ -9,7 +9,6 @@ import { useAppDispatch, useAppSelector, reviewsActions } from '../../redux'
 import ManageReviewModal from '../../components/Modals/ManageReview/Modal'
 import AddIcon from '@mui/icons-material/Add'
 import config from '../../config/listing-page'
-import { notificationActions } from '../../redux'
 import Notification from '../../components/elements-renderer/Notification'
 
 const { PAGE_SIZE } = config
@@ -38,9 +37,6 @@ const Listing: NextPage = () => {
   useEffect(() => {
     dispatch(reviewsActions.fetch())
     dispatch(reviewsActions.fetchTotalCount())
-    dispatch(
-      notificationActions.showNotification({ message: 'error', type: 'error' })
-    )
   }, [])
   const numberOfPages = Math.ceil(totalReviews / PAGE_SIZE)
   const pagination = (
