@@ -91,3 +91,12 @@ export const createReview = gql`
     }
   }
 `
+
+export const deleteReview = gql`
+  mutation deleteReview($reviewId: UUID!) {
+    deleteMovieReviewById(input: { id: $reviewId }) {
+      clientMutationId
+      deletedMovieReviewId
+    }
+  }
+`

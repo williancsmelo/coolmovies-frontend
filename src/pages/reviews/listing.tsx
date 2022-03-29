@@ -22,7 +22,7 @@ const Listing: NextPage = () => {
   const [showModal, setShowModal] = useState(false)
   const [reviewToEdit, setReviewToEdit] = useState<MovieReview>()
   const changePage = (event: ChangeEvent<unknown>, newPage: number) => {
-    reviewsActions.changeListingPage(newPage)
+    dispatch(reviewsActions.changeListingPage(newPage))
     const requestConfig = {
       offset: (newPage - 1) * PAGE_SIZE,
       limit: PAGE_SIZE
@@ -73,6 +73,7 @@ const Listing: NextPage = () => {
             review={review}
             key={review.id}
             onEdit={item => openModal('edit', item)}
+            onDelete={id => dispatch(reviewsActions.delete(id))}
           />
         ))}
         {pagination}

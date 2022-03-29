@@ -8,19 +8,24 @@ import {
   Grid,
   IconButton
 } from '@mui/material'
-import { Edit as EditIcon } from '@mui/icons-material'
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import getRating from '../elements-renderer/Rating'
 import { css } from '@emotion/react'
 
 type ReviewCardProps = {
   review: MovieReview
   onEdit: (review: MovieReview) => void
+  onDelete: (id: string) => void
 }
 
 const imageSize = 30
 const cardSize = 1024
 
-const ReviewCard = ({ review, onEdit }: ReviewCardProps): JSX.Element => (
+const ReviewCard = ({
+  review,
+  onEdit,
+  onDelete
+}: ReviewCardProps): JSX.Element => (
   <Card sx={{ maxWidth: cardSize }} css={styles.card}>
     <Grid container>
       <Grid item xs={12} sm={4} md={3} lg={3} css={styles.imageContainer}>
@@ -41,9 +46,14 @@ const ReviewCard = ({ review, onEdit }: ReviewCardProps): JSX.Element => (
             </div>
           }
           action={
-            <IconButton aria-label="edit" onClick={() => onEdit(review)}>
-              <EditIcon />
-            </IconButton>
+            <>
+              <IconButton aria-label="edit" onClick={() => onEdit(review)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton aria-label="edit" onClick={() => onDelete(review.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </>
           }
         />
         <CardContent>

@@ -8,7 +8,8 @@ import {
   loadReviewsQuery,
   loadTotalCount,
   updateReview,
-  createReview
+  createReview,
+  deleteReview
 } from '../../../graphql/reviews'
 import config from '../../../config/listing-page'
 import { notificationActions as notification } from '../notification'
@@ -140,6 +141,33 @@ export const createEpic: Epic = (
       } catch (err) {
         console.error(err)
         return actions.loadError('Error creating review')
+      }
+    })
+  )
+
+export const deleteEpic: Epic = (
+  action$: Observable<SliceAction['delete']>,
+  state$: StateObservable<RootState>,
+  { client }: EpicDependencies
+) =>
+  action$.pipe(
+    filter(actions.delete.match),
+    switchMap(async ({ payload }: { payload: string }) => {
+      try {
+        await client.mutate({
+          mutation: deleteReview,
+          variables: {
+            reviewId: payload
+          }
+        })
+        actions.fetch()
+        return notification.showNotification({
+          message: `Review deleted`,
+          type: 'success'
+        })
+      } catch (err) {
+        console.error(err)
+        return actions.loadError('Error deleting review')
       }
     })
   )

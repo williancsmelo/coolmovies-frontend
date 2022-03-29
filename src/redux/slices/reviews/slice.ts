@@ -42,9 +42,8 @@ export const slice = createSlice({
       state.currentPage = action.payload
     },
     update: (state, action: PayloadAction<Partial<MovieReview>>) => {},
-    successfulUpdate: (state, action: PayloadAction<string>) => {},
     create: (state, action: PayloadAction<Partial<MovieReview>>) => {},
-    successfulCreate: (state, action: PayloadAction<string>) => {}
+    delete: (state, action: PayloadAction<string>) => {}
   }
 })
 

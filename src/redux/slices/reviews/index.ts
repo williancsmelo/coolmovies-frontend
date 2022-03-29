@@ -6,7 +6,8 @@ import {
   getTotalCountEpic,
   updateEpic,
   createEpic,
-  loadErrorEpic
+  loadErrorEpic,
+  deleteEpic
 } from './epics'
 
 export const reviewsEpics = combineEpics(
@@ -14,5 +15,6 @@ export const reviewsEpics = combineEpics(
   getTotalCountEpic,
   updateEpic,
   createEpic,
-  loadErrorEpic
+  loadErrorEpic,
+  deleteEpic
 )
