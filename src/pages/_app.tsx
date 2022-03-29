@@ -5,7 +5,12 @@ import { Provider as ReduxProvider } from 'react-redux'
 import Head from 'next/head'
 import { createStore } from '../redux'
 import { EnhancedStore } from '@reduxjs/toolkit'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  NormalizedCacheObject
+} from '@apollo/client'
 import { ThemeProvider } from '@mui/styles'
 import theme from '../styles/theme'
 

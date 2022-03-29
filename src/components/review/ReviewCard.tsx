@@ -8,9 +8,10 @@ import {
   Grid,
   IconButton
 } from '@mui/material'
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
+import { Delete as DeleteIcon } from '@mui/icons-material'
 import getRating from '../elements-renderer/Rating'
 import { css } from '@emotion/react'
+import EditIcon from '../elements-renderer/EditIcon'
 
 type ReviewCardProps = {
   review: MovieReview

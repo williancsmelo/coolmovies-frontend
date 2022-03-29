@@ -8,7 +8,8 @@ import UserSelector from '../../form-fields/UserSelector'
 type ManageReviewFormProps = {
   action: 'edit' | 'create'
   initialValues?: Partial<MovieReview>
-  onSubmit: any
+  onSubmit: (values: Partial<Movie>) => void
+  onCancel: () => void
 }
 
 type FormValues = Partial<{
@@ -16,14 +17,15 @@ type FormValues = Partial<{
   body: string
   title: string
   rating: number
-  movie: { id: string; title: string } | null
+  movie: Partial<MovieReview> | null
   user?: User | null
 }>
 
 const ManageReviewForm = ({
   action,
   initialValues = {},
-  onSubmit
+  onSubmit,
+  onCancel
 }: ManageReviewFormProps): JSX.Element => {
   const { palette } = useTheme()
   const defaultValues = {
@@ -117,7 +119,7 @@ const ManageReviewForm = ({
           color="secondary"
         />
         <div css={styles.footer}>
-          <Button color="inherit" variant="contained">
+          <Button color="inherit" variant="contained" onClick={onCancel}>
             Cancel
           </Button>
           <Button

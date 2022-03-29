@@ -39,6 +39,7 @@ const ManageReviewModal = ({
         action={action}
         initialValues={review}
         onSubmit={onSubmit}
+        onCancel={closeModal}
       />
     </Modal>
   )

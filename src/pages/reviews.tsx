@@ -1,15 +1,15 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
-import general from '../../styles/general'
+import general from '../styles/general'
 import { css } from '@emotion/react'
 import { Pagination, CircularProgress, Backdrop, Button } from '@mui/material'
-import listingStyles from '../../styles/listing'
-import ReviewCard from '../../components/review/ReviewCard'
-import { useAppDispatch, useAppSelector, reviewsActions } from '../../redux'
-import ManageReviewModal from '../../components/Modals/ManageReview/Modal'
+import listingStyles from '../styles/listing'
+import ReviewCard from '../components/review/ReviewCard'
+import { useAppDispatch, useAppSelector, reviewsActions } from '../redux'
+import ManageReviewModal from '../components/Modals/ManageReview/Modal'
 import AddIcon from '@mui/icons-material/Add'
-import config from '../../config/listing-page'
-import Notification from '../../components/elements-renderer/Notification'
+import config from '../config/listing-page'
+import Notification from '../components/elements-renderer/Notification'
 
 const { PAGE_SIZE } = config
 
