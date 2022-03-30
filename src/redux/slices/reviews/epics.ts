@@ -12,7 +12,11 @@ import {
   deleteReview
 } from '../../../graphql/reviews'
 import config from '../../../config/listing-page'
-import { notificationActions as notification } from '../notification'
+import {
+  notificationActions as notification,
+  notificationActions
+} from '../notification'
+import { getOffset } from '../../../helpers/listing-reviews'
 
 const { PAGE_SIZE } = config
 
@@ -46,7 +50,7 @@ export const listingEpic: Epic = (
       const { payload } = params as { payload?: FetchReviewsConfig }
       let queryConfig = {
         limit: PAGE_SIZE,
-        offset: (state$.value.reviews.currentPage - 1) * PAGE_SIZE
+        offset: getOffset(state$.value.reviews.currentPage)
       }
       if (payload) {
         queryConfig = {
@@ -129,6 +133,31 @@ export const createEpic: Epic = (
             movieId: payload.movie?.id,
             userId: payload.user?.id,
             ...payload
+          },
+          update: (cache, { data }) => {
+            const newReview = data.createMovieReview.movieReview
+            const queryToUpdate = {
+              query: loadReviewsQuery,
+              variables: {
+                offset: getOffset(state$.value.reviews.currentPage),
+                limit: PAGE_SIZE
+              }
+            }
+            const dataInCache = cache.readQuery(queryToUpdate)
+            const newReviews = [newReview, ...dataInCache.allMovieReviews.nodes]
+            if (newReview.length > PAGE_SIZE) {
+              newReview.pop()
+            }
+            const newCache = {
+              allMovieReviews: {
+                ...dataInCache.allMovieReviews,
+                nodes: newReviews
+              }
+            }
+            cache.writeQuery({
+              ...queryToUpdate,
+              data: newCache
+            })
           }
         })
         return actions.fetch()
@@ -152,6 +181,32 @@ export const deleteEpic: Epic = (
           mutation: deleteReview,
           variables: {
             reviewId: payload
+          },
+          update: (cache, { data }) => {
+            const { id: deletedId } = data.deleteMovieReviewById.movieReview
+            const queryToUpdate = {
+              query: loadReviewsQuery,
+              variables: {
+                offset: getOffset(state$.value.reviews.currentPage),
+                limit: PAGE_SIZE
+              }
+            }
+            const dataInCache = cache.readQuery(queryToUpdate)
+            console.log(dataInCache.allMovieReviews.nodes)
+            console.log(data)
+            const newReviews = dataInCache.allMovieReviews.nodes.filter(
+              d => d.id !== deletedId
+            )
+            const newCache = {
+              allMovieReviews: {
+                ...dataInCache.allMovieReviews,
+                nodes: newReviews
+              }
+            }
+            cache.writeQuery({
+              ...queryToUpdate,
+              data: newCache
+            })
           }
         })
         return actions.fetch()

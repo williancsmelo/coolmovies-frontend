@@ -54,9 +54,25 @@ export const updateReview = gql`
         id: $id
       }
     ) {
-      clientMutationId
       movieReview {
         id
+        body
+        movie: movieByMovieId {
+          id
+          imgUrl
+          director: movieDirectorByMovieDirectorId {
+            id
+            name
+          }
+          releaseDate
+          title
+        }
+        rating
+        title
+        user: userByUserReviewerId {
+          id
+          name
+        }
       }
     }
   }
@@ -81,7 +97,26 @@ export const createReview = gql`
         }
       }
     ) {
-      clientMutationId
+      movieReview {
+        id
+        body
+        movie: movieByMovieId {
+          id
+          imgUrl
+          director: movieDirectorByMovieDirectorId {
+            id
+            name
+          }
+          releaseDate
+          title
+        }
+        rating
+        title
+        user: userByUserReviewerId {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -89,8 +124,9 @@ export const createReview = gql`
 export const deleteReview = gql`
   mutation deleteReview($reviewId: UUID!) {
     deleteMovieReviewById(input: { id: $reviewId }) {
-      clientMutationId
-      deletedMovieReviewId
+      movieReview {
+        id
+      }
     }
   }
 `

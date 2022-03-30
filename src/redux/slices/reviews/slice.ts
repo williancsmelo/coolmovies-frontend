@@ -10,7 +10,7 @@ interface ReviewsState {
 const initialState: ReviewsState = {
   listReviews: [],
   loading: false,
-  totalReviews: 1,
+  totalReviews: 0,
   currentPage: 1
 }
 
