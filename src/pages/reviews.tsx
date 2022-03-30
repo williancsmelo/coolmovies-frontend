@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import general from '../styles/general'
 import { css } from '@emotion/react'

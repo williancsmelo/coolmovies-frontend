@@ -4,6 +4,7 @@ import { TextField, Grid, Rating, useTheme, Button } from '@mui/material'
 import { formStyles } from '../../../styles'
 import MovieSelector from '../../form-fields/MovieSelector'
 import UserSelector from '../../form-fields/UserSelector'
+import { FormValues, formatInitialValues } from './helpers'
 
 type ManageReviewFormProps = {
   action: 'edit' | 'create'
@@ -12,16 +13,7 @@ type ManageReviewFormProps = {
   onCancel: () => void
 }
 
-type FormValues = Partial<{
-  id: string
-  body: string
-  title: string
-  rating: number
-  movie: Partial<MovieReview> | null
-  user?: User | null
-}>
-
-const ManageReviewForm = ({
+export const ManageReviewForm = ({
   action,
   initialValues = {},
   onSubmit,
@@ -35,22 +27,6 @@ const ManageReviewForm = ({
     user: null,
     movie: null
   }
-  const formatInitialValues = (values: typeof initialValues): FormValues => {
-    const { movie } = values
-    let newValues: FormValues = {
-      id: initialValues.id,
-      body: initialValues.body,
-      title: initialValues.title,
-      rating: initialValues.rating
-    }
-    if (movie) {
-      newValues.movie = {
-        id: movie.id,
-        title: movie.title
-      }
-    }
-    return newValues
-  }
   const [formValues, setFormValues] = useState<FormValues>(
     action === 'edit' ? formatInitialValues(initialValues) : defaultValues
   )
@@ -61,7 +37,12 @@ const ManageReviewForm = ({
     })
   }
   return (
-    <form>
+    <form
+      onSubmit={event => {
+        event.preventDefault()
+        onSubmit(formValues)
+      }}
+    >
       <div css={styles.formContainer}>
         {action === 'create' && (
           <UserSelector
@@ -130,7 +111,7 @@ const ManageReviewForm = ({
                 background: ${palette.primary.dark};
               }
             `}
-            onClick={() => onSubmit(formValues)}
+            type="submit"
           >
             Submit
           </Button>

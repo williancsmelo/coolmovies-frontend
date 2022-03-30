@@ -1,25 +1,18 @@
 import React from 'react'
 import StarIcon from '@mui/icons-material/Star'
 import { useTheme } from '@mui/material'
-
-type RenderRatingProps = {
-  rating: number
-  maxRating: number
-}
+import { getRating } from '../helpers/rating'
 
 const RenderRating = (rating: number, maxRating = 5): JSX.Element => {
   const { palette } = useTheme()
-  const toRender: JSX.Element[] = []
-  for (let i = 0; i < maxRating; i++) {
-    const active = i + 1 <= rating
-    toRender.push(
-      <StarIcon
-        key={`${i}`}
-        sx={{ color: active ? palette.primary.main : '' }}
-        color={!active ? 'disabled' : 'inherit'}
-      />
-    )
-  }
+  const arrayRating = getRating(rating, maxRating)
+  const toRender = arrayRating.map((r, i) => (
+    <StarIcon
+      key={`${i}`}
+      sx={{ color: r ? palette.primary.main : '' }}
+      color={!r ? 'disabled' : 'inherit'}
+    />
+  ))
   return <div>{toRender}</div>
 }
 

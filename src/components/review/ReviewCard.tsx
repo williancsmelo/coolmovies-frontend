@@ -12,6 +12,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material'
 import getRating from '../elements-renderer/Rating'
 import { css } from '@emotion/react'
 import EditIcon from '../elements-renderer/EditIcon'
+import { getImageSize } from '../helpers/image'
 
 type ReviewCardProps = {
   review: MovieReview
@@ -19,7 +20,7 @@ type ReviewCardProps = {
   onDelete: (id: string) => void
 }
 
-const imageSize = 30
+const imageSize = getImageSize(30, '9:16')
 const cardSize = 1024
 
 const ReviewCard = ({
@@ -73,8 +74,8 @@ const ReviewCard = ({
 
 const styles = {
   image: css({
-    maxWidth: `${imageSize * 9}px`,
-    maxHeight: `${imageSize * 16}px`,
+    maxWidth: `${imageSize.width}px`,
+    maxHeight: `${imageSize.height}px`,
     alignSelf: 'center'
   }),
   card: css({
