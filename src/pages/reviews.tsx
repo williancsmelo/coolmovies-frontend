@@ -37,7 +37,6 @@ const Reviews: NextPage = () => {
   }
   useEffect(() => {
     dispatch(reviewsActions.fetch())
-    dispatch(reviewsActions.fetchTotalCount())
   }, [])
   const numberOfPages = Math.ceil(totalReviews / PAGE_SIZE)
   const pagination = (
@@ -47,7 +46,7 @@ const Reviews: NextPage = () => {
       onChange={changePage}
       color="secondary"
       css={[
-        listingStyles.pagination,
+        listingStyles.pagination
         { visibility: numberOfPages === 1 ? 'hidden' : 'visible' }
       ]}
     />

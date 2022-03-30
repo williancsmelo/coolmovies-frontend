@@ -17,6 +17,7 @@ import {
   notificationActions
 } from '../notification'
 import { getOffset } from '../../../helpers/listing-reviews'
+import { updateQuery } from './helpers'
 
 const { PAGE_SIZE } = config
 
@@ -63,30 +64,10 @@ export const listingEpic: Epic = (
           query: loadReviewsQuery,
           variables: queryConfig
         })
-        return actions.loadedReviews(result.data.allMovieReviews.nodes)
+        return actions.loadedReviews(result.data.allMovieReviews)
       } catch (err) {
         console.error(err)
         return actions.loadError('Error listing reviews')
-      }
-    })
-  )
-
-export const getTotalCountEpic: Epic = (
-  action$: Observable<SliceAction['fetchTotalCount']>,
-  state$: StateObservable<RootState>,
-  { client }: EpicDependencies
-) =>
-  action$.pipe(
-    filter(actions.fetchTotalCount.match),
-    switchMap(async () => {
-      try {
-        const result = await client.query({
-          query: loadTotalCount
-        })
-        return actions.loadedTotal(result.data?.allMovieReviews.totalCount)
-      } catch (err) {
-        console.error(err)
-        return actions.loadedTotal(0)
       }
     })
   )
@@ -136,28 +117,19 @@ export const createEpic: Epic = (
           },
           update: (cache, { data }) => {
             const newReview = data.createMovieReview.movieReview
-            const queryToUpdate = {
-              query: loadReviewsQuery,
-              variables: {
-                offset: getOffset(state$.value.reviews.currentPage),
-                limit: PAGE_SIZE
-              }
-            }
-            const dataInCache = cache.readQuery(queryToUpdate)
-            const newReviews = [newReview, ...dataInCache.allMovieReviews.nodes]
-            if (newReview.length > PAGE_SIZE) {
-              newReview.pop()
-            }
-            const newCache = {
-              allMovieReviews: {
-                ...dataInCache.allMovieReviews,
-                nodes: newReviews
-              }
-            }
-            cache.writeQuery({
-              ...queryToUpdate,
-              data: newCache
-            })
+            updateQuery(
+              cache,
+              state$.value.reviews.currentPage,
+              newReview,
+              (data, cache) => {
+                const newCache = [data, ...cache]
+                if (newCache.length > PAGE_SIZE) {
+                  newCache.pop()
+                }
+                return newCache
+              },
+              count => count + 1
+            )
           }
         })
         return actions.fetch()
@@ -184,29 +156,13 @@ export const deleteEpic: Epic = (
           },
           update: (cache, { data }) => {
             const { id: deletedId } = data.deleteMovieReviewById.movieReview
-            const queryToUpdate = {
-              query: loadReviewsQuery,
-              variables: {
-                offset: getOffset(state$.value.reviews.currentPage),
-                limit: PAGE_SIZE
-              }
-            }
-            const dataInCache = cache.readQuery(queryToUpdate)
-            console.log(dataInCache.allMovieReviews.nodes)
-            console.log(data)
-            const newReviews = dataInCache.allMovieReviews.nodes.filter(
-              d => d.id !== deletedId
+            updateQuery(
+              cache,
+              state$.value.reviews.currentPage,
+              deletedId,
+              (data, cacheData) => cacheData.filter(c => c.id !== data),
+              count => count - 1
             )
-            const newCache = {
-              allMovieReviews: {
-                ...dataInCache.allMovieReviews,
-                nodes: newReviews
-              }
-            }
-            cache.writeQuery({
-              ...queryToUpdate,
-              data: newCache
-            })
           }
         })
         return actions.fetch()

@@ -24,13 +24,13 @@ export const slice = createSlice({
     ) => {
       state.loading = true
     },
-    fetchTotalCount: (state, action: PayloadAction<void>) => {},
-    loadedReviews: (state, action: PayloadAction<MovieReview[]>) => {
+    loadedReviews: (
+      state,
+      action: PayloadAction<{ nodes: MovieReview[]; totalCount: number }>
+    ) => {
       state.loading = false
-      state.listReviews = action.payload
-    },
-    loadedTotal: (state, action: PayloadAction<number>) => {
-      state.totalReviews = action.payload
+      state.listReviews = action.payload.nodes
+      state.totalReviews = action.payload.totalCount
     },
     loadError: (state, action: PayloadAction<string>) => {
       state.loading = false

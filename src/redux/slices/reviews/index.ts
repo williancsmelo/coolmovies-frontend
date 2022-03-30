@@ -3,7 +3,6 @@ export { default as reviewsReducer } from './slice'
 import { combineEpics } from 'redux-observable'
 import {
   listingEpic,
-  getTotalCountEpic,
   updateEpic,
   createEpic,
   loadErrorEpic,
@@ -12,7 +11,6 @@ import {
 
 export const reviewsEpics = combineEpics(
   listingEpic,
-  getTotalCountEpic,
   updateEpic,
   createEpic,
   loadErrorEpic,
