@@ -46,7 +46,7 @@ const Reviews: NextPage = () => {
       onChange={changePage}
       color="secondary"
       css={[
-        listingStyles.pagination
+        listingStyles.pagination,
         { visibility: numberOfPages === 1 ? 'hidden' : 'visible' }
       ]}
     />
